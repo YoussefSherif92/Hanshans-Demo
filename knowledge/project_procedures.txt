@@ -1,0 +1,64 @@
+HANSHANS DEMO — EXAMPLE PROJECT PROCEDURES
+
+These are fictional procedures for demonstration purposes.
+They are not verified internal company procedures.
+
+1. PROJECT RESPONSIBILITY
+Each project has a project manager.
+Individual tasks can be assigned to different employees.
+The project manager coordinates the overall project.
+The task owner is responsible for completing the assigned task.
+
+2. INQUIRY
+Record the customer's request and the planned work.
+Assign a project manager.
+Create a task to clarify missing information.
+
+3. QUOTATION
+Prepare the quotation.
+Request partner quotations where necessary.
+If the customer has not replied by the agreed follow-up date,
+create a task to follow up.
+A quotation is not a confirmed order.
+
+4. ORDER
+After the customer accepts, record the confirmed order.
+Identify the measurements, materials and external services needed.
+Assign each preparation task to an employee with a deadline.
+
+5. INSTALLATION READINESS
+Before marking a project ready for installation, verify that:
+- Required final measurements are complete.
+- Required customer selections are confirmed.
+- Required materials are available.
+- Required partner confirmations have been received.
+An unknown requirement must be checked rather than assumed complete.
+
+6. SCHEDULING
+Agree on an installation date with the customer and installation team.
+Record the agreed date.
+Unresolved preparation requirements must be highlighted.
+
+7. OVERDUE TASKS
+A task is overdue when its due date is before today
+and its status is not "Erledigt".
+A task due today is not overdue.
+Completing a task removes its overdue status.
+
+8. EXTERNAL REPLIES
+If a supplier, partner or customer reply is missing,
+record who must reply and the expected response date.
+Assign an employee to follow up.
+Do not treat a missing reply as confirmation.
+
+9. INVOICING AND CONTROLLING
+After the relevant work is completed, review invoice readiness.
+Track invoices and outstanding payments.
+Archive a project only after its work and financial obligations
+have been completed and checked.
+
+10. ANSWERING QUESTIONS
+Use these procedures to explain general workflow requirements.
+Current project facts must come from the project database.
+If information is missing, state what needs to be checked.
+Do not invent deadlines, payments, confirmations or completed tasks.

@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hanshans Projektboard</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: #f2f5f9;
+      color: #203047;
+      font-family: Arial, sans-serif;
+    }
+
+    header {
+      padding: 28px;
+      background: #17334a;
+      color: white;
+    }
+
+    h1 { margin: 0 0 8px; }
+    header p { margin: 0; color: #d1dfeb; }
+
+    main { padding: 24px; }
+
+    .summary, .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .metric {
+      background: white;
+      padding: 18px 24px;
+      border-radius: 12px;
+      min-width: 180px;
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 30px;
+      margin-bottom: 6px;
+    }
+
+    .danger { color: #b42318; }
+
+    label {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    input, select, button {
+      padding: 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 7px;
+      background: white;
+      color: #203047;
+      font: inherit;
+    }
+
+    input:focus-visible,
+    select:focus-visible,
+    button:focus-visible,
+    summary:focus-visible {
+      outline: 3px solid #638fb5;
+      outline-offset: 3px;
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(255px, 1fr));
+      gap: 16px;
+      overflow-x: auto;
+      padding-bottom: 18px;
+      align-items: start;
+    }
+
+    .column {
+      background: #e5ebf2;
+      border-radius: 12px;
+      padding: 12px;
+      min-height: 220px;
+    }
+
+    .column h2 {
+      display: flex;
+      justify-content: space-between;
+      font-size: 16px;
+      margin: 4px 0 16px;
+    }
+
+    .count {
+      background: white;
+      padding: 2px 8px;
+      border-radius: 12px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 5px #17334a0d;
+    }
+
+    .card h3 { margin: 0 0 8px; font-size: 17px; }
+
+    .meta {
+      font-size: 13px;
+      line-height: 1.7;
+      color: #526176;
+    }
+
+    .task {
+      border-top: 1px solid #e2e8f0;
+      margin-top: 14px;
+      padding-top: 12px;
+      font-size: 14px;
+    }
+
+    .task-title { font-weight: bold; margin-bottom: 6px; }
+
+    .badge {
+      display: inline-block;
+      background: #fee4e2;
+      color: #b42318;
+      border-radius: 5px;
+      padding: 4px 7px;
+      margin-top: 8px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .task form {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    button {
+      background: #17334a;
+      color: white;
+      cursor: pointer;
+      border-color: #17334a;
+    }
+
+    button:hover { background: #28516e; }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
+
+    .empty { color: #65758a; font-size: 13px; }
+
+    .assistant {
+      margin-bottom: 24px;
+      padding: 22px;
+      border-top: 4px solid #28516e;
+    }
+
+    .assistant h2 {
+      margin: 0 0 10px;
+      font-size: 20px;
+    }
+
+    .assistant p {
+      line-height: 1.6;
+    }
+
+    .assistant-note {
+      color: #526176;
+      font-size: 14px;
+    }
+
+    .question-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .question-row input {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .ai-answer {
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      line-height: 1.7;
+    }
+
+    .ai-sources details {
+      border-top: 1px solid #e2e8f0;
+      padding: 12px 0;
+    }
+
+    .ai-sources summary {
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .ai-sources p {
+      white-space: pre-wrap;
+      font-size: 14px;
+      color: #526176;
+    }
+
+    [hidden] { display: none !important; }
+
+    @media (max-width: 600px) {
+      header { padding: 20px; }
+      main { padding: 14px; }
+      .question-row { flex-direction: column; }
+      .metric { flex: 1; }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Hanshans Projektboard</h1>
+    <p>Demo · Fiktive Beispieldaten · Projektübersicht und Aufgaben</p>
+  </header>
+
+  <main>
+    <section class="card assistant" aria-labelledby="assistant-title">
+      <h2 id="assistant-title">KI-Assistent für Projektabläufe</h2>
+
+      <p class="assistant-note">
+        Stellen Sie Fragen zu den hinterlegten Beispielabläufen.
+        Die Antworten basieren auf fiktiven Verfahren und müssen
+        fachlich geprüft werden. Der Assistent hat keinen Zugriff
+        auf aktuelle Projektstände oder Aufgaben.
+      </p>
+
+      <form id="ask-form">
+        <label for="question">Ihre Frage</label>
+
+        <div class="question-row">
+          <input
+            id="question"
+            name="question"
+            type="text"
+            maxlength="1500"
+            required
+            placeholder="Was muss vor der Montage geprüft werden?"
+          >
+          <button id="ask-button" type="submit">
+            Frage stellen
+          </button>
+        </div>
+      </form>
+
+      <p
+        id="ai-answer"
+        class="ai-answer"
+        role="status"
+        aria-live="polite"
+      ></p>
+
+      <div id="source-panel" hidden>
+        <h3>Verwendete Quellen</h3>
+        <p class="assistant-note">
+          Auszüge aus den hinterlegten Beispielabläufen.
+          Die Quelltexte werden in ihrer Originalsprache angezeigt.
+        </p>
+        <div id="ai-sources" class="ai-sources"></div>
+      </div>
+    </section>
+
+    {% set totals = namespace(overdue=0) %}
+    {% for project in projects %}
+      {% set totals.overdue = totals.overdue + project.overdue_tasks %}
+    {% endfor %}
+
+    <div class="summary">
+      <div class="metric">
+        <strong>{{ projects | length }}</strong>
+        Projekte gesamt
+      </div>
+      <div class="metric">
+        <strong class="danger">{{ totals.overdue }}</strong>
+        Überfällige Aufgaben gesamt
+      </div>
+    </div>
+
+    <div class="filters">
+      <label for="phase-filter">
+        Phase
+        <select id="phase-filter">
+          <option value="">Alle Phasen</option>
+          {% for phase in phases %}
+            <option value="{{ phase }}">{{ phase }}</option>
+          {% endfor %}
+        </select>
+      </label>
+
+      <label for="manager-filter">
+        Projektverantwortlicher
+        <select id="manager-filter">
+          <option value="">Alle Personen</option>
+          {% for manager in projects | map(attribute='manager') | unique | sort %}
+            <option value="{{ manager }}">{{ manager }}</option>
+          {% endfor %}
+        </select>
+      </label>
+
+      <label for="due-filter">
+        Fälligkeit
+        <select id="due-filter">
+          <option value="">Alle Projekte</option>
+          <option value="overdue">Mit überfälligen Aufgaben</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="board">
+      {% for phase in phases %}
+        <section class="column" data-phase="{{ phase }}">
+          <h2>
+            {{ phase }}
+            <span class="count">0</span>
+          </h2>
+
+          {% for project in projects %}
+            {% if project.phase == phase %}
+              <article
+                class="card"
+                data-manager="{{ project.manager }}"
+                data-overdue="{{ project.overdue_tasks }}"
+              >
+                <h3>{{ project.name }}</h3>
+
+                <div class="meta">
+                  {{ project.customer }} · Projekt #{{ project.id }}<br>
+                  <b>Projektleitung:</b> {{ project.manager }}<br>
+                  <b>Projekttermin:</b>
+                  {{ project.deadline[8:10] }}.{{ project.deadline[5:7] }}.{{ project.deadline[0:4] }}
+                </div>
+
+                {% for task in project.tasks %}
+                  <div class="task">
+                    <div class="task-title">{{ task.title }}</div>
+
+                    <div class="meta">
+                      <b>Zuständig:</b> {{ task.owner }}<br>
+                      <b>Fällig:</b>
+                      {{ task.due_date[8:10] }}.{{ task.due_date[5:7] }}.{{ task.due_date[0:4] }}<br>
+                      <b>Status:</b> {{ task.status }}
+                    </div>
+
+                    {% if task.overdue %}
+                      <span class="badge">Überfällig</span>
+                    {% endif %}
+
+                    <form
+                      method="post"
+                      action="{{ url_for('update_task_status', task_id=task.id) }}"
+                    >
+                      <label for="status-{{ task.id }}">
+                        Aufgabenstatus ändern
+                        <select id="status-{{ task.id }}" name="status">
+                          {% for status in task_statuses %}
+                            <option
+                              value="{{ status }}"
+                              {% if status == task.status %}selected{% endif %}
+                            >{{ status }}</option>
+                          {% endfor %}
+                        </select>
+                      </label>
+                      <button type="submit">Speichern</button>
+                    </form>
+                  </div>
+                {% endfor %}
+              </article>
+            {% endif %}
+          {% endfor %}
+
+          <p class="empty">Keine passenden Projekte</p>
+        </section>
+      {% endfor %}
+    </div>
+  </main>
+
+  <script>
+    const phaseFilter = document.getElementById("phase-filter");
+    const managerFilter = document.getElementById("manager-filter");
+    const dueFilter = document.getElementById("due-filter");
+
+    function applyFilters() {
+      document.querySelectorAll(".column").forEach(column => {
+        column.hidden =
+          phaseFilter.value !== "" &&
+          column.dataset.phase !== phaseFilter.value;
+
+        let visibleCount = 0;
+
+        column.querySelectorAll(".card").forEach(card => {
+          const matchesManager =
+            managerFilter.value === "" ||
+            card.dataset.manager === managerFilter.value;
+
+          const matchesDue =
+            dueFilter.value === "" ||
+            Number(card.dataset.overdue) > 0;
+
+          card.hidden = !(matchesManager && matchesDue);
+
+          if (!card.hidden) visibleCount++;
+        });
+
+        column.querySelector(".count").textContent = visibleCount;
+        column.querySelector(".empty").hidden = visibleCount > 0;
+      });
+    }
+
+    [phaseFilter, managerFilter, dueFilter].forEach(filter => {
+      filter.addEventListener("change", applyFilters);
+    });
+
+    applyFilters();
+
+    const askForm = document.getElementById("ask-form");
+    const questionInput = document.getElementById("question");
+    const askButton = document.getElementById("ask-button");
+    const answerElement = document.getElementById("ai-answer");
+    const sourcesElement = document.getElementById("ai-sources");
+    const sourcePanel = document.getElementById("source-panel");
+
+    askForm.addEventListener("submit", async event => {
+      event.preventDefault();
+
+      const question = questionInput.value.trim();
+
+      if (!question) {
+        answerElement.textContent = "Bitte geben Sie eine Frage ein.";
+        questionInput.focus();
+        return;
+      }
+
+      askButton.disabled = true;
+      askButton.textContent = "Bitte warten …";
+      answerElement.classList.remove("danger");
+      answerElement.textContent = "Die Antwort wird erstellt …";
+      sourcesElement.replaceChildren();
+      sourcePanel.hidden = true;
+
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 125000);
+
+      try {
+        const response = await fetch("/ask", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ question }),
+          signal: controller.signal
+        });
+
+        if (!response.ok) {
+          throw new Error("service");
+        }
+
+        const data = await response.json();
+
+        if (typeof data.answer !== "string") {
+          throw new Error("response");
+        }
+
+        answerElement.textContent = data.answer;
+
+        const sources = Array.isArray(data.sources) ? data.sources : [];
+
+        sources.forEach((source, index) => {
+          const details = document.createElement("details");
+          const summary = document.createElement("summary");
+          const text = document.createElement("p");
+
+          summary.textContent = `[${index + 1}] ${source.heading}`;
+          text.textContent = source.text;
+
+          details.append(summary, text);
+          sourcesElement.append(details);
+        });
+
+        sourcePanel.hidden = sources.length === 0;
+      } catch (error) {
+        answerElement.classList.add("danger");
+
+        answerElement.textContent =
+          error.name === "AbortError"
+            ? "Die Anfrage hat zu lange gedauert. Bitte versuchen Sie es erneut."
+            : "Der KI-Assistent ist derzeit nicht erreichbar. Bitte versuchen Sie es erneut.";
+      } finally {
+        clearTimeout(timeout);
+        askButton.disabled = false;
+        askButton.textContent = "Frage stellen";
+      }
+    });
+  </script>
+</body>
+</html>
