@@ -24,6 +24,14 @@ PHASES = [
 
 
 def connect():
+    database_url = os.getenv("DATABASE_URL")
+
+    if database_url:
+        return psycopg.connect(
+            database_url,
+            row_factory=dict_row,
+        )
+
     return psycopg.connect(
         host=os.environ["DB_HOST"],
         port=os.environ.get("DB_PORT", "5432"),
